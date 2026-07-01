@@ -66,17 +66,25 @@ jobs:
           install: mingw-w64-x86_64-gcc zip
           path-type: inherit
 
-      - name: Build package
+      - name: Build package (Unix)
+        if: matrix.goos != 'windows'
         shell: bash
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "1"
+        run: bash scripts/package.sh
+
+      - name: Build package (Windows)
+        if: matrix.goos == 'windows'
+        shell: pwsh
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "1"
         run: |
-          if [[ "${{ matrix.goos }}" == "windows" ]]; then
-            export PATH="/mingw64/bin:$PATH"
-          fi
-          bash scripts/package.sh
+          $env:Path = "C:\msys64\mingw64\bin;" + $env:Path
+          .\scripts\package.ps1
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
