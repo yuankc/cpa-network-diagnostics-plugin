@@ -17,7 +17,7 @@ plugin_file="$repo_dir/dist/$goos/$goarch/diagnostics$ext"
 package_dir="$repo_dir/release"
 zip_file="$package_dir/diagnostics_${version}_${goos}_${goarch}.zip"
 
-"$script_dir/build.sh"
+bash "$script_dir/build.sh"
 mkdir -p "$package_dir"
 rm -f "$zip_file"
 (
