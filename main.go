@@ -219,7 +219,7 @@ func handleMethod(method string, payload []byte) ([]byte, error) {
 				{Method: http.MethodGet, Path: "/diagnostics/status", Description: "Returns CPA process network diagnostics as JSON."},
 			},
 			Resources: []pluginapi.ResourceRoute{
-				{Path: "/dashboard", Menu: "网络诊断", 显示公网IP、本地IP、DNS和OpenAI连接情况"},
+				{Path: "/dashboard", Menu: "网络诊断", Description: "显示公网 IP、本地 IP、DNS 和 OpenAI 连接情况。"},
 				{Path: "/status", Description: "Returns CPA process network diagnostics as JSON for the diagnostics dashboard."},
 			},
 		})
