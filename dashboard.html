@@ -43,7 +43,6 @@ const modeDirect = document.getElementById('modeDirect');
 const modeHost = document.getElementById('modeHost');
 var currentRun = 0;
 var state = {};
-var fullStatusPromise = null;
 var selectedNetwork = 'direct';
 
 refreshBtn.addEventListener('click', function(){ runDiagnosticsProgressive(); });
@@ -73,34 +72,6 @@ function resourceStatusUrl(){
     if (pluginID) return marker + pluginID + '/status';
   }
   return '/v0/resource/plugins/cpa-network-diagnostics-plugin/status';
-}
-
-function render(data){
-  const pub = data.public_ip || {};
-  const ipRisk = data.ip_risk || {};
-  const openai = data.openai || {};
-  return '<section class="summary">' +
-    '<div class="summaryGrid">' +
-      metric('公共出口 IP', pub.ip || '未获取', 'ip mono') +
-      metric('IP 类型', ipTypeBadge(ipRisk), 'value raw') +
-      metric('OpenAI 可用性', openaiBadge(openai), 'value raw') +
-      metric('运营商/组织', pub.org || ipRisk.org || '未知', 'value') +
-    '</div>' +
-    '<div class="small">检测时间：' + esc(data.checked_at || '-') + '，耗时 ' + esc(data.duration_ms || 0) + ' ms，来源：' + esc(pub.source || '无') + '。</div>' +
-  '</section>' +
-  '<section class="grid">' +
-    panel('IP 画像', renderIPRisk(ipRisk)) +
-    panel('OpenAI 可用性', renderOpenAI(openai)) +
-    panel('地区一致性', renderGeo(data.geo_consistency || {})) +
-    panel('出站路径对比', renderEgress(data.egress || {})) +
-    panel('运行环境', renderRuntime(data.runtime || {})) +
-    panel('本机 IP', renderLocalIPs(data.local_ips || [])) +
-    panel('出口源地址', renderOutbound(data.outbound_sources || [])) +
-    panel('公共 IP 查询', renderPublicChecks((pub.checks || [])), 'wide') +
-    panel('DNS 解析', renderDNS(data.dns || [])) +
-    panel('OpenAI 连通性', renderConnectivity(data.connectivity || [])) +
-    panel('浏览器信息', '<div id="browser" class="browser"></div><div class="small">浏览器信息来自当前页面，用来对比访问者环境和 CPA 进程环境。</div>') +
-  '</section>';
 }
 
 function metric(label, value, cls){
@@ -268,7 +239,6 @@ async function runDiagnosticsProgressive(){
   const runId = ++currentRun;
   const started = Date.now();
   state = {checked_at: new Date().toISOString()};
-  fullStatusPromise = null;
   errorBox.classList.add('hidden');
   loading.classList.add('hidden');
   content.innerHTML = renderShell();
@@ -349,27 +319,6 @@ async function loadSection(runId, panelId, url, onData){
   }
 }
 
-function loadFullStatusFallback(){
-  if (!fullStatusPromise) {
-    fullStatusPromise = fetch(sectionUrl(''), {cache:'no-store'}).then(function(resp){
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      return resp.json();
-    });
-  }
-  return fullStatusPromise;
-}
-function fallbackSection(panelId, full){
-  if (panelId === 'runtimePanel') return {runtime: full.runtime || {}, local_ips: full.local_ips || [], proxy: full.proxy || {}};
-  if (panelId === 'publicPanel') return full.public_ip || {};
-  if (panelId === 'egressPanel') return full.egress || {};
-  if (panelId === 'ipRiskPanel') return {public_ip: full.public_ip || {}, ip_risk: full.ip_risk || {}};
-  if (panelId === 'openaiPanel') return full.openai || {};
-  if (panelId === 'geoPanel') return full.geo_consistency || {};
-  if (panelId === 'dnsPanel') return full.dns || [];
-  if (panelId === 'connectivityPanel') return full.connectivity || [];
-  if (panelId === 'outboundPanel') return full.outbound_sources || [];
-  return full;
-}
 function renderShell(){
   return '<section class="summary">' +
     '<div class="summaryGrid">' +
