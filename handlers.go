@@ -114,7 +114,15 @@ func statusPathKind(path string) string {
 		path = path[:index]
 	}
 	cleaned := "/" + strings.Trim(strings.TrimSuffix(path, "/"), "/")
-	bases := []string{"/status", "/diagnostics/status", "/v0/management/diagnostics/status", "/v0/resource/plugins/diagnostics/status"}
+	bases := []string{
+		"/status",
+		"/diagnostics/status",
+		"/" + pluginStoreID + "/status",
+		"/v0/management/diagnostics/status",
+		"/v0/management/" + pluginStoreID + "/status",
+		"/v0/resource/plugins/diagnostics/status",
+		"/v0/resource/plugins/" + pluginStoreID + "/status",
+	}
 	for _, base := range bases {
 		if cleaned == base {
 			return "full"

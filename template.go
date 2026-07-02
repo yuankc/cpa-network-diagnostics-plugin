@@ -37,7 +37,7 @@ func renderDashboardHTML() string {
   <div id="content" class="hidden"></div>
 </main>
 <script>
-const statusUrl = '/v0/resource/plugins/diagnostics/status';
+const statusUrl = resourceStatusUrl();
 const loading = document.getElementById('loading');
 const errorBox = document.getElementById('error');
 const content = document.getElementById('content');
@@ -85,6 +85,18 @@ function setNetworkMode(mode){
 function sectionUrl(section){
   const suffix = section ? '/' + section : '';
   return statusUrl + suffix + '?network=' + encodeURIComponent(selectedNetwork) + '&t=' + Date.now();
+}
+
+function resourceStatusUrl(){
+  const marker = '/v0/resource/plugins/';
+  const pathname = window.location && window.location.pathname ? window.location.pathname.replace(/\/+$/, '') : '';
+  const markerIndex = pathname.indexOf(marker);
+  if (markerIndex >= 0) {
+    const rest = pathname.slice(markerIndex + marker.length);
+    const pluginID = rest.split('/')[0];
+    if (pluginID) return marker + pluginID + '/status';
+  }
+  return '/v0/resource/plugins/cpa-network-diagnostics-plugin/status';
 }
 
 function render(data){

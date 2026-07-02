@@ -188,8 +188,8 @@ bash scripts/package.sh
 输出示例：
 
 ```text
-release/cpa-network-diagnostics-plugin_0.1.8_windows_amd64.zip
-release/cpa-network-diagnostics-plugin_0.1.8_linux_amd64.zip
+release/cpa-network-diagnostics-plugin_0.1.9_windows_amd64.zip
+release/cpa-network-diagnostics-plugin_0.1.9_linux_amd64.zip
 ```
 
 zip 根目录中只包含一个平台对应的动态库，例如 `cpa-network-diagnostics-plugin.so` 或 `cpa-network-diagnostics-plugin.dll`。
@@ -197,8 +197,8 @@ zip 根目录中只包含一个平台对应的动态库，例如 `cpa-network-di
 仓库已包含 GitHub Actions release workflow。推送 tag 后会构建多平台 zip、`.sha256` 和 `checksums.txt`：
 
 ```bash
-git tag v0.1.8
-git push origin v0.1.8
+git tag v0.1.9
+git push origin v0.1.9
 ```
 
 ## 本地 CPA SDK 联调

@@ -19,8 +19,10 @@ func TestIsStatusPath(t *testing.T) {
 		{path: "/status", want: true},
 		{path: "/status/", want: true},
 		{path: "/diagnostics/status", want: true},
+		{path: "/cpa-network-diagnostics-plugin/status", want: true},
 		{path: "/v0/management/diagnostics/status", want: true},
 		{path: "/v0/resource/plugins/diagnostics/status", want: true},
+		{path: "/v0/resource/plugins/cpa-network-diagnostics-plugin/status", want: true},
 		{path: "/foo/status", want: false},
 		{path: "/v0/resource/plugins/other/status", want: false},
 		{path: "/dashboard", want: false},
@@ -56,6 +58,7 @@ func TestStatusPathKindSections(t *testing.T) {
 	}{
 		{path: "/status/dns", want: "dns"},
 		{path: "/diagnostics/status/openai", want: "openai"},
+		{path: "/v0/resource/plugins/cpa-network-diagnostics-plugin/status/ip-risk", want: "ip-risk"},
 		{path: "/v0/resource/plugins/diagnostics/status/runtime", want: "runtime"},
 		{path: "/v0/management/diagnostics/status/connectivity", want: "connectivity"},
 		{path: "/foo/status/dns", want: ""},
